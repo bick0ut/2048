@@ -3,16 +3,12 @@ package sample;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -20,14 +16,13 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 import static javafx.scene.paint.Color.BLACK;
 import static sample.Board.Direction.*;
 
 public class Main extends Application {
     public Board model;
-
+    public Text bottomText;
     private List<Color> colors = new ArrayList<>();
 
     @Override
@@ -52,18 +47,38 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
+
         BorderPane bp = new BorderPane();
         GridPane gp = new GridPane();
-
-        bp.setCenter(gp);
-
         gp.setAlignment(Pos.CENTER);
+        bp.setCenter(gp);
         update(gp);
+
+        Button restart = new Button();
+        restart.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                model = new Board();
+                update(gp);
+            }
+        });
+        StackPane top = new StackPane();
+        top.getChildren().add(restart);
+        bp.setTop(top);
+
+        StackPane stack = new StackPane();
+        bottomText = new Text(("WASD or Arrow Keys To Play"));
+        bottomText.setStyle("-fx-font: 36 arial;");
+        stack.getChildren().addAll(bottomText);
+        bp.setBottom(stack);
 
         Scene scene = new Scene(bp, 600, 480);
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
+                if(model.isGameOver()){
+                    return;
+                }
                 if(event.getCode() == KeyCode.UP || event.getCode() == KeyCode.W){
                     if(model.makeMove(UP)) {
                         model.spawnSquare();
@@ -73,13 +88,13 @@ public class Main extends Application {
                         model.spawnSquare();
                     }
                 } else if(event.getCode() == KeyCode.LEFT || event.getCode() == KeyCode.A){
-                     if(model.makeMove(LEFT)) {
-                         model.spawnSquare();
-                     }
+                    if(model.makeMove(LEFT)) {
+                        model.spawnSquare();
+                    }
                 } else if(event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.D){
-                     if(model.makeMove(RIGHT)) {
-                         model.spawnSquare();
-                     }
+                    if(model.makeMove(RIGHT)) {
+                        model.spawnSquare();
+                    }
                 }
                 update(gp);
             }
@@ -107,6 +122,11 @@ public class Main extends Application {
                 stack.getChildren().addAll(rec, text);
                 gp.add(stack, y, x);
             }
+        }
+        if(model.isGameOver()){
+            this.bottomText.setText("Game Over! Final Score: " + model.getScore());
+        } else if(model.getScore() > 0){
+            this.bottomText.setText("Score: " + model.getScore());
         }
         System.out.println(model.toString());
     }
