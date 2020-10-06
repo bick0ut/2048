@@ -3,21 +3,24 @@ package sample;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.w3c.dom.css.Rect;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static javafx.scene.paint.Color.BLACK;
+import static javafx.scene.paint.Color.*;
 import static sample.Board.Direction.*;
 
 public class Main extends Application {
@@ -47,32 +50,48 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-
+        //sets gridpane in middle
         BorderPane bp = new BorderPane();
         GridPane gp = new GridPane();
         gp.setAlignment(Pos.CENTER);
         bp.setCenter(gp);
         update(gp);
 
-        Button restart = new Button();
-        restart.setOnAction(new EventHandler<ActionEvent>() {
+        //restart button on top
+        StackPane top = new StackPane();
+        Rectangle restart = new Rectangle(200, 50);
+        restart.setFill(CYAN);
+        restart.setStrokeWidth(5);
+        restart.setStroke(BLACK);
+        restart.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(ActionEvent actionEvent) {
+            public void handle(MouseEvent mouseEvent) {
                 model = new Board();
                 update(gp);
             }
         });
-        StackPane top = new StackPane();
-        top.getChildren().add(restart);
+        Text restartText = new Text("New Game");
+        restartText.setStyle("-fx-font: 36 arial;");
+        restartText.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                model = new Board();
+                update(gp);
+            }
+        });
+        top.getChildren().addAll(restart, restartText);
+        top.setPadding(new Insets(30));
         bp.setTop(top);
 
+        //bottom text
         StackPane stack = new StackPane();
         bottomText = new Text(("WASD or Arrow Keys To Play"));
         bottomText.setStyle("-fx-font: 36 arial;");
         stack.getChildren().addAll(bottomText);
         bp.setBottom(stack);
 
-        Scene scene = new Scene(bp, 600, 480);
+        //checks keypresses for gameplay
+        Scene scene = new Scene(bp, 1280, 720);
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -100,7 +119,8 @@ public class Main extends Application {
             }
         });
 
-        primaryStage.setTitle("2048");
+        scene.setFill(GOLD);
+        primaryStage.setTitle("2048 By Nick Chen");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -110,7 +130,7 @@ public class Main extends Application {
             for(int y = 0; y < Board.COL; y++){
                 Square sq = this.model.getBoard()[x][y];
                 StackPane stack = new StackPane();
-                Rectangle rec = new Rectangle(100, 100);
+                Rectangle rec = new Rectangle(120, 120);
                 rec.setFill(this.colors.get( sq.getTier() % 12 ) );
                 rec.setStroke((BLACK));
                 Text text = new Text();
@@ -128,7 +148,7 @@ public class Main extends Application {
         } else if(model.getScore() > 0){
             this.bottomText.setText("Score: " + model.getScore());
         }
-        System.out.println(model.toString());
+        //test System.out.println(model.toString());
     }
 
 
