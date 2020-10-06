@@ -68,6 +68,7 @@ public class Main extends Application {
             public void handle(MouseEvent mouseEvent) {
                 model = new Board();
                 update(gp);
+                bottomText.setText("Score: 0");
             }
         });
         Text restartText = new Text("New Game");
@@ -77,6 +78,7 @@ public class Main extends Application {
             public void handle(MouseEvent mouseEvent) {
                 model = new Board();
                 update(gp);
+                bottomText.setText("Score: 0");
             }
         });
         top.getChildren().addAll(restart, restartText);
