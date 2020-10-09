@@ -32,7 +32,8 @@ public class Main extends Application {
     public void init() throws Exception {
         super.init();
         this.model = new Board();
-        this.colors.add(Color.WHITE); // 0
+        this.colors.add(Color.WHITE); // -1
+        this.colors.add(Color.DARKGRAY); // 0
         this.colors.add(Color.GREY); // 1
         this.colors.add(Color.RED); // 2
         this.colors.add(Color.ORANGE); // 3
@@ -133,7 +134,7 @@ public class Main extends Application {
                 Square sq = this.model.getBoard()[x][y];
                 StackPane stack = new StackPane();
                 Rectangle rec = new Rectangle(120, 120);
-                rec.setFill(this.colors.get( sq.getTier() % 12 ) );
+                rec.setFill(this.colors.get( sq.getTier() % 14 ) );
                 rec.setStroke((BLACK));
                 Text text = new Text();
                 rec.setStrokeWidth(3);
